@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1097366144912",
+    "project_id": "bud-guard",
+    "storage_bucket": "bud-guard.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097366144912:android:f33320d3323341690a9515",
+        "android_client_info": {
+          "package_name": "com.budguard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfw5wWhNGZCF0nU12olRgGBWyrlYYlIVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097366144912:android:3ffbfdc3c8b101ba0a9515",
+        "android_client_info": {
+          "package_name": "com.budguard.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfw5wWhNGZCF0nU12olRgGBWyrlYYlIVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
