@@ -124,18 +124,9 @@ export default function AdminScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>관리자 메인 화면</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="조회할 유저 이메일 입력"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
       <Button
         title="위치 확인"
-        onPress={() => {
-          if (email.trim()) navigation.navigate("AdminLocation", { email: email.trim() });
-        }}
+        onPress={() => navigation.navigate("AdminLocation", { email: email.trim() })}
       />
     </View>
   );
