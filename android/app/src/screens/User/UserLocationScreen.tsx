@@ -1,157 +1,68 @@
+// src/screens/UserLocationScreen.tsx
 // import React, { useEffect, useState } from "react";
-// import { View, Text } from "react-native";
+// import { View, Text, Button, PermissionsAndroid, Platform } from "react-native";
+// import Geolocation from "@react-native-community/geolocation";
 // import MapView, { Marker } from "react-native-maps";
-// import { auth, db } from "../firebase/firebaseConfig";
+// import { db } from "../../firebase/firebaseConfig.ts";
+// import { auth } from "../../firebase/firebaseConfig.ts";
 // import { doc, setDoc } from "firebase/firestore";
-// import { requestLocationPermission, getCurrentLocation } from "../services/locationService";
 
-// export default function UserLocationScreen() {
-//   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+// const UserLocationScreen = () => {
+//   const [location, setLocation] = useState<any>(null);
 
 //   useEffect(() => {
-//     (async () => {
-//       const granted = await requestLocationPermission();
-//       if (!granted) return;
-
-//       const loc = await getCurrentLocation();
-//       setLocation(loc);
-
-//       // Firestore에 저장 (내 위치 갱신)
-//       const user = auth.currentUser;
-//       if (user) {
-//         await setDoc(
-//           doc(db, "locations", user.uid),
-//           {
-//             email: user.email,
-//             latitude: loc.latitude,
-//             longitude: loc.longitude,
-//             updatedAt: new Date(),
-//           },
-//           { merge: true }
-//         );
-//       }
-//     })();
+//     requestLocationPermission();
 //   }, []);
+
+//   const requestLocationPermission = async () => {
+//     if (Platform.OS === "android") {
+//       const granted = await PermissionsAndroid.request(
+//         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//         {
+//           title: "위치 권한 요청",
+//           message: "앱이 위치를 사용하도록 허용하시겠습니까?",
+//           buttonNeutral: "나중에",
+//           buttonNegative: "거부",
+//           buttonPositive: "허용",
+//         }
+//       );
+//       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//         startTracking();
+//       } else {
+//         console.log("위치 권한 거부됨");
+//       }
+//     } else {
+//       startTracking(); // iOS라면 바로 실행
+//     }
+//   };
+
+//   const startTracking = () => {
+//     Geolocation.watchPosition(
+//       async (pos) => {
+//         const { latitude, longitude } = pos.coords;
+//         setLocation({ latitude, longitude });
+
+//         // 🔥 Firebase에 유저 위치 업로드
+//         const user = auth.currentUser;
+//         if (user) {
+//           await setDoc(doc(db, "locations", user.email!), {
+//             latitude,
+//             longitude,
+//             updatedAt: new Date(),
+//           });
+//         }
+//       },
+//       (error) => console.error(error),
+//       { enableHighAccuracy: true, distanceFilter: 10, interval: 5000 }
+//     );
+//   };
 
 //   return (
 //     <View style={{ flex: 1 }}>
 //       {location ? (
 //         <MapView
-//           style={{ flex: 1 }}
-//           initialRegion={{
-//             ...location,
-//             latitudeDelta: 0.01,
-//             longitudeDelta: 0.01,
-//           }}
-//         >
-//           <Marker coordinate={location} title="내 위치" />
-//         </MapView>
-//       ) : (
-//         <Text>위치 불러오는 중...</Text>
-//       )}
-//     </View>
-//   );
-// }
-
-
-// import React from "react";
-// import { View, Text } from "react-native";
-// import useLocation from "../hooks/useLocation";
-// import { db, auth } from "../firebase/firebaseConfig";
-// import { doc, setDoc } from "firebase/firestore";
-
-// export default function UserLocationScreen() {
-//   const location = useLocation(async (coords) => {
-//     const user = auth.currentUser;
-//     if (user) {
-//       await setDoc(doc(db, "locations", user.uid), {
-//         uid: user.uid,
-//         email: user.email,
-//         latitude: coords.latitude,
-//         longitude: coords.longitude,
-//         timestamp: new Date(),
-//       });
-//     }
-//   });
-
-//   return (
-//     <View>
-//       {location ? (
-//         <Text>
-//           내 위치: {location.latitude}, {location.longitude}
-//         </Text>
-//       ) : (
-//         <Text>위치 정보를 가져오는 중...</Text>
-//       )}
-//     </View>
-//   );
-// }
-
-// import React, { useEffect, useState } from "react";
-// import { View, Text, StyleSheet, PermissionsAndroid, Platform } from "react-native";
-// import MapView, { Marker } from "react-native-maps";
-// import Geolocation from "@react-native-community/geolocation";
-
-// async function requestLocationPermission() {
-//   if (Platform.OS === "android") {
-//     try {
-//       const granted = await PermissionsAndroid.request(
-//         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-//         {
-//           title: "위치 권한 요청",
-//           message: "실시간 위치 확인을 위해 위치 권한이 필요합니다.",
-//           buttonNeutral: "나중에",
-//           buttonNegative: "취소",
-//           buttonPositive: "허용",
-//         }
-//       );
-//       return granted === PermissionsAndroid.RESULTS.GRANTED;
-//     } catch (err) {
-//       console.warn(err);
-//       return false;
-//     }
-//   }
-//   return true;
-// }
-
-// export default function UserLocationScreen() {
-//   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-
-//   useEffect(() => {
-    
-//     (async () => {
-//       const hasPermission = await requestLocationPermission();
-//       if (!hasPermission) return;
-
-//       Geolocation.getCurrentPosition(
-//         (pos) => {
-//           const { latitude, longitude } = pos.coords;
-//           setLocation({ latitude, longitude });
-//         },
-//         (err) => console.error(err),
-//         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-//       );
-
-//       // 실시간 추적
-//       const watchId = Geolocation.watchPosition(
-//         (pos) => {
-//           const { latitude, longitude } = pos.coords;
-//           setLocation({ latitude, longitude });
-//         },
-//         (err) => console.error(err),
-//         { enableHighAccuracy: true, distanceFilter: 10 }
-//       );
-
-//       return () => Geolocation.clearWatch(watchId);
-//     })();
-//   }, []);
-
-//   return (
-//     <View style={styles.container}>
-//       {location ? (
-//         <MapView
-//           style={styles.map}
-//           initialRegion={{
+//           style={{ width: "100%", height: "100%" }}
+//           region={{
 //             latitude: location.latitude,
 //             longitude: location.longitude,
 //             latitudeDelta: 0.01,
@@ -161,78 +72,92 @@
 //           <Marker coordinate={location} title="내 위치" />
 //         </MapView>
 //       ) : (
-//         <Text>위치를 불러오는 중...</Text>
+//         <Text>위치를 가져오는 중...</Text>
 //       )}
 //     </View>
 //   );
-// }
+// };
 
-// const styles = StyleSheet.create({
-//   container: { flex: 1 },
-//   map: { flex: 1 },
-// });
+// export default UserLocationScreen;
 
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, PermissionsAndroid, Platform } from "react-native";
+import { View, Text, Button, PermissionsAndroid, Platform, Alert } from "react-native";
+import Geolocation from "react-native-geolocation-service";
 import MapView, { Marker } from "react-native-maps";
-import Geolocation from "@react-native-community/geolocation";
+import { getAuth } from "firebase/auth";
+import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
-const UserLocationScreen = () => {
+const UserLocationScreen: React.FC = () => {
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  // ✅ 권한 요청 함수
+  // 위치 권한 요청
   const requestLocationPermission = async () => {
     try {
       if (Platform.OS === "android") {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
-            title: "위치 권한 요청",
-            message: "이 앱은 지도를 표시하기 위해 위치 권한이 필요합니다.",
+            title: "위치 권한",
+            message: "앱에서 위치를 사용하려면 권한이 필요합니다.",
             buttonNeutral: "나중에",
-            buttonNegative: "거부",
-            buttonPositive: "허용",
+            buttonNegative: "취소",
+            buttonPositive: "확인",
           }
         );
-
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("위치 권한 허용됨");
-          getCurrentLocation();
-        } else {
-          console.log("위치 권한 거부됨");
-          setError("위치 권한이 거부되었습니다.");
-        }
-      } else {
-        // iOS는 Info.plist에서 자동 처리됨
-        getCurrentLocation();
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
       }
+      return true;
     } catch (err) {
       console.warn(err);
+      return false;
     }
   };
 
-  // ✅ 현재 위치 불러오기
-  const getCurrentLocation = () => {
+  // 위치 가져오기
+  const getLocation = async () => {
+    const hasPermission = await requestLocationPermission();
+    if (!hasPermission) {
+      Alert.alert("위치 권한이 거부되었습니다.");
+      return;
+    }
+
     Geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
+      async (position) => {
+        const { latitude, longitude } = position.coords;
         setLocation({ latitude, longitude });
+
+        // Firestore에 위치 업데이트
+        const user = getAuth().currentUser;
+        if (user) {
+          const userDoc = doc(db, "users", user.uid);
+          await updateDoc(userDoc, {
+            location: {
+              latitude,
+              longitude,
+              updatedAt: serverTimestamp(),
+            },
+          });
+        }
       },
-      (error) => setError(error.message),
+      (error) => {
+        console.error(error);
+        Alert.alert("위치를 가져올 수 없습니다.", error.message);
+      },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
   };
 
   useEffect(() => {
-    requestLocationPermission();
+    getLocation();
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <Button title="내 위치 가져오기" onPress={getLocation} />
       {location ? (
         <MapView
-          style={styles.map}
+          style={{ flex: 1 }}
           initialRegion={{
             latitude: location.latitude,
             longitude: location.longitude,
@@ -243,15 +168,10 @@ const UserLocationScreen = () => {
           <Marker coordinate={location} title="내 위치" />
         </MapView>
       ) : (
-        <Text>{error ? error : "위치를 불러오는 중..."}</Text>
+        <Text style={{ textAlign: "center", marginTop: 20 }}>위치를 가져오는 중...</Text>
       )}
     </View>
   );
 };
 
 export default UserLocationScreen;
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
-});
