@@ -230,7 +230,7 @@ export default function SignupScreen() {
       <TextInput style={styles.input} placeholder="이메일" value={email} onChangeText={setEmail} autoCapitalize="none" />
       <TextInput style={styles.input} placeholder="비밀번호" secureTextEntry value={password} onChangeText={setPassword} />
 
-      <Text style={{ marginBottom: 8, fontWeight: "600" }}>학생입니까?</Text>
+      <Text style={{ marginBottom: 8, fontWeight: "600", color: 'black' }}>학생입니까?</Text>
       <View style={styles.row}>
         <Pressable style={styles.checkItem} onPress={() => setIsStudent(true)}>
           <Text style={styles.checkBox}>{isStudent === true ? "☑" : "☐"}</Text>
@@ -248,10 +248,10 @@ export default function SignupScreen() {
 }
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, justifyContent: "center" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 12, textAlign: "center" },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 12, textAlign: "center", color: 'black' },
   input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 12, marginBottom: 10 },
   row: { flexDirection: "row", gap: 16, marginBottom: 16 },
   checkItem: { flexDirection: "row", alignItems: "center" },
   checkBox: { fontSize: 22, marginRight: 8 },
-  checkLabel: { fontSize: 16 },
+  checkLabel: { fontSize: 16, color: 'black' },
 });

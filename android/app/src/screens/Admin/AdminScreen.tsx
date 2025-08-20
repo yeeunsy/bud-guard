@@ -133,7 +133,7 @@ export default function AdminScreen() {
 }
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
-  title: { fontSize: 20, marginBottom: 20 },
+  title: { fontSize: 20, marginBottom: 20, color: 'black' },
   input: {
     width: "100%",
     padding: 10,

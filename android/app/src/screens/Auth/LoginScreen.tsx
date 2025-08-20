@@ -170,6 +170,6 @@ export default function LoginScreen() {
 }
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, justifyContent: "center" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 12, textAlign: "center" },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 12, textAlign: "center", color: 'black' },
   input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 12, marginBottom: 10 },
 });
